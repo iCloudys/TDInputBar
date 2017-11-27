@@ -17,7 +17,7 @@
 - (instancetype)initWithType:(TDInputBarActionType)type
                       target:(id)target
                       action:(SEL)action{
-
+    
     self = [super initWithFrame:CGRectZero];
     
     switch (type) {
@@ -25,10 +25,11 @@
         {
             UIButton* more = [UIButton buttonWithType:UIButtonTypeCustom];
             
-            [more setImage:[UIImage imageNamed:@"TDInputBar.bundle/inputbar_more_action_normal"] forState:UIControlStateNormal];
+            
+            [more setImage:[self imageNamed:@"inputbar_more_action_normal"] forState:UIControlStateNormal];
             
             [more addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
-        
+            
             self.view = more;
         }
             break;
@@ -37,7 +38,7 @@
         {
             UIButton* record = [UIButton buttonWithType:UIButtonTypeCustom];
             
-            [record setImage:[UIImage imageNamed:@"TDInputBar.bundle/inputbar_more_action_normal"] forState:UIControlStateNormal];
+            [more setImage:[self imageNamed:@"inputbar_more_action_normal"] forState:UIControlStateNormal];
             
             [record addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
             
@@ -50,7 +51,7 @@
             TDInputBarField* textField = [[TDInputBarField alloc] init];
             
             textField.delegate = target;
-
+            
             self.view = textField;
         }
             break;
@@ -64,6 +65,19 @@
     return self;
 }
 
+- (UIImage*)imageNamed:(NSString*)name{
+    NSBundle* mainBundle = [NSBundle bundleForClass:[TDInputBarAction class]];
+    
+    NSBundle* resourcesBundle = [NSBundle bundleWithPath:[mainBundle pathForResource:@"TDInputBar" ofType:@"bundle"]];
+    
+    if (resourcesBundle == nil) {
+        resourcesBundle = mainBundle;
+    }
+    
+    UIImage* image = [UIImage imageNamed:name inBundle:resourcesBundle compatibleWithTraitCollection:nil];
+    
+    return image;
+}
 
 - (void)setOption:(TDInputBarOption *)option{
     _option = option;
