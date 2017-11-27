@@ -38,7 +38,7 @@
         {
             UIButton* record = [UIButton buttonWithType:UIButtonTypeCustom];
             
-            [more setImage:[self imageNamed:@"inputbar_more_action_normal"] forState:UIControlStateNormal];
+            [record setImage:[self imageNamed:@"inputbar_more_action_normal"] forState:UIControlStateNormal];
             
             [record addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
             
@@ -113,3 +113,4 @@
     return [self.view isFirstResponder];
 }
 @end
+
