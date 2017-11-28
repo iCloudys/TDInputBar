@@ -381,9 +381,8 @@
     
     if (delegate) {
         
-        if (string.length == 0 && [delegate respondsToSelector:@selector(inputBar:textField:needDeleteInRange:)]) {
-            [delegate inputBar:self textField:textField needDeleteInRange:range];
-            return NO;
+        if (string.length == 0 && [delegate respondsToSelector:@selector(inputBar:textField:shouldDeleteInRange:)]) {
+            return [delegate inputBar:self textField:textField shouldDeleteInRange:range];
         }
         
         if (string.length == 1 && [delegate respondsToSelector:@selector(inputBar:textField:shouldInputCharacter:inRange:)]) {

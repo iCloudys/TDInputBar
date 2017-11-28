@@ -46,6 +46,7 @@ UIKIT_EXTERN TDInputAnimatedKey const TDInputAnimatedTransformKey;
 /**
  输入特殊字符回调eg:@
  需要指定characterSet属性
+ 由于系统原因，可能会回调多次
  
  类似于 textField:shouldChangeCharactersInRange:replacementString:
  
@@ -64,16 +65,16 @@ shouldInputCharacter:(unichar)character
 
 /**
  按下删除按钮，可以单独处理删除过程
- 如果实现此方法，则一定要调用
- [TDInputBarField deleteForPrefix:suffix:]方法才会有效果
+ 如果实现此方法，可以调用
+ [TDInputBarField deleteForPrefix:suffix:]
 
  @param inputBar inputBar
  @param textField 输入框
  @param range 删除的位置
  */
-- (void)inputBar:(TDInputBar *)inputBar
+- (BOOL)inputBar:(TDInputBar *)inputBar
        textField:(TDInputBarField*)textField
-needDeleteInRange:(NSRange)range;
+shouldDeleteInRange:(NSRange)range;
 
 /**
  InputBar位置改变时候回调，

@@ -66,7 +66,7 @@
 }
 
 - (NSString *)deleteForPrefix:(NSString*)prefix suffix:(NSString*)suffix{
-
+    
     //prefix 或者suffix 长度不为1，不进行匹配
     if ((prefix.length != 1) && (suffix.length != 1)) {
         
@@ -94,10 +94,8 @@
     
     //字符串不是suffix结尾，不进行匹配
     if (![text hasSuffix:suffix]) {
-    
-        [self deleteBackward];
         
-        [self unmarkText];
+        [self deleteBackward];
         
         return nil;
     }
