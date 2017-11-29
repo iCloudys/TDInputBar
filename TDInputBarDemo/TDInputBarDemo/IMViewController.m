@@ -9,11 +9,12 @@
 #import "IMViewController.h"
 #import "TDInputBar.h"
 
+//模拟自定义类型
 typedef NSString* Message;
-
+typedef NSString* User;
 
 #define TDInputAtStart  @"@"
-#define TDInputAtEnd    @"A"
+#define TDInputAtEnd    @"\u2004"
 
 @interface IMViewController ()<
 UITableViewDataSource,
@@ -28,6 +29,8 @@ TDInputBarDelegate>
 
 @property (nonatomic, strong) NSMutableArray<Message>* dataSource;
 
+@property (nonatomic, strong) NSMutableArray<User>* atUsers;
+
 @end
 
 @implementation IMViewController
@@ -36,6 +39,8 @@ TDInputBarDelegate>
     [super viewDidLoad];
     
     self.dataSource = [NSMutableArray array];
+    
+    self.atUsers = [NSMutableArray array];
     
     [self setupTableView];
     
@@ -145,8 +150,20 @@ TDInputBarDelegate>
 //删除按钮
 - (BOOL)inputBar:(TDInputBar *)inputBar textField:(TDInputBarField *)textField shouldDeleteInRange:(NSRange)range{
     
-    NSString* text = [textField deleteForPrefix:TDInputAtStart suffix:TDInputAtEnd];
-    if (text) {
+    NSString* text = textField.text;
+    
+    NSString* delStr = [textField deleteForPrefix:TDInputAtStart suffix:TDInputAtEnd];
+    
+    if (delStr) {
+        
+        NSString* subStr = [text substringToIndex:range.length + range.location];
+        
+        NSArray* array = [subStr componentsSeparatedByString:TDInputAtEnd];
+        
+        [_atUsers removeObjectAtIndex:array.count - 2];
+        
+        NSLog(@"删除某人:%@",_atUsers);
+        
         return NO;
     }
     return YES;
@@ -156,7 +173,11 @@ TDInputBarDelegate>
 - (BOOL)inputBar:(TDInputBar *)inputBar textField:(TDInputBarField *)textField shouldInputCharacter:(unichar)character inRange:(NSRange)range{
     
     //此处模拟选择@某人
-    NSString* text = [NSString stringWithFormat:@"%@%@%@",TDInputAtStart,@"小张",TDInputAtEnd];
+    User user = [NSString stringWithFormat:@"小张%d",arc4random_uniform(100)];
+    
+    NSString* text = [NSString stringWithFormat:@"%@%@%@",TDInputAtStart,user,TDInputAtEnd];
+    
+    [self.atUsers addObject:user];
     
     [self.inputBar insertText:text];
     
