@@ -67,13 +67,9 @@
 
 - (NSString *)deleteForPrefix:(NSString*)prefix suffix:(NSString*)suffix{
     
+    BOOL ret = NO;
     //prefix 或者suffix 长度不为1，不进行匹配
-    if ((prefix.length != 1) && (suffix.length != 1)) {
-        
-        [self deleteBackward];
-    
-        return nil;
-    }
+    ret = ret | ((prefix.length != 1) && (suffix.length != 1));
     
     
     UITextRange* selectedTextRange = self.selectedTextRange;
@@ -81,50 +77,44 @@
     UITextPosition* beginning = self.beginningOfDocument;
     
     //当前有选择字符串，不进行匹配
-    if (!selectedTextRange.isEmpty) {
-        
-        [self deleteBackward];
-        
-        return nil;
-    }
+    ret = ret | (!selectedTextRange.isEmpty);
+
     
     NSUInteger local = [self offsetFromPosition:beginning toPosition:selectedTextRange.start];
     
     NSString* text = [self.text substringToIndex:local];
     
     //字符串不是suffix结尾，不进行匹配
-    if (![text hasSuffix:suffix]) {
-        
-        [self deleteBackward];
-        
-        return nil;
-    }
+    ret = ret | (![text hasSuffix:suffix]);
     
     NSRange range = [text rangeOfString:prefix options:NSBackwardsSearch];
     
     //虽然是suffix结尾，但是没有找到prefix开头，不进行匹配
-    if (range.location == NSNotFound) {
-        
-        [self deleteBackward];
+    ret = ret | (range.location == NSNotFound);
+    
+    if (ret) {
         
         return nil;
+        
+    }else{
+        
+        //删除指定字符串
+        NSString* delString = [text substringFromIndex:range.location];
+        
+        UITextPosition* fromPosition = [self positionFromPosition:selectedTextRange.start offset: - delString.length];
+        
+        UITextRange* newSelectedRange = [self textRangeFromPosition:fromPosition toPosition:selectedTextRange.end];
+        
+        [self replaceRange:newSelectedRange withText:@""];
+        
+        //剔除前后缀，并返回
+        delString = [delString stringByReplacingOccurrencesOfString:prefix withString:@""];
+        
+        delString = [delString stringByReplacingOccurrencesOfString:suffix withString:@""];
+        
+        return delString;
     }
     
-    //删除指定字符串
-    NSString* delString = [text substringFromIndex:range.location];
-    
-    UITextPosition* fromPosition = [self positionFromPosition:selectedTextRange.start offset: - delString.length];
-    
-    UITextRange* newSelectedRange = [self textRangeFromPosition:fromPosition toPosition:selectedTextRange.end];
-    
-    [self replaceRange:newSelectedRange withText:@""];
-    
-    //剔除前后缀，并返回
-    delString = [delString stringByReplacingOccurrencesOfString:prefix withString:@""];
-    
-    delString = [delString stringByReplacingOccurrencesOfString:suffix withString:@""];
-    
-    return delString;
 }
 
 @end

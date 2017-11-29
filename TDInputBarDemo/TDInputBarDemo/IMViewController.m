@@ -13,7 +13,7 @@ typedef NSString* Message;
 
 
 #define TDInputAtStart  @"@"
-#define TDInputAtEnd    @"\u2004"
+#define TDInputAtEnd    @"A"
 
 @interface IMViewController ()<
 UITableViewDataSource,
@@ -145,11 +145,8 @@ TDInputBarDelegate>
 //删除按钮
 - (BOOL)inputBar:(TDInputBar *)inputBar textField:(TDInputBarField *)textField shouldDeleteInRange:(NSRange)range{
     
-    NSString* text = textField.text;
-    NSString* lastChar = [text substringFromIndex:text.length -1];
-    
-    if ([lastChar isEqualToString:TDInputAtEnd]) {
-        [textField deleteForPrefix:TDInputAtStart suffix:TDInputAtEnd];
+    NSString* text = [textField deleteForPrefix:TDInputAtStart suffix:TDInputAtEnd];
+    if (text) {
         return NO;
     }
     return YES;
