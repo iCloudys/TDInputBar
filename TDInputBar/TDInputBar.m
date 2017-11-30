@@ -7,7 +7,7 @@
 
 #import "TDInputBar.h"
 #import "TDInputBarField.h"
-#import "TDInputBarAction.h"
+#import "TDInputBarField.h"
 
 @interface TDInputBar()
 <UITextFieldDelegate>
@@ -15,11 +15,9 @@
     BOOL _keyboardDidShow;
 }
 
-@property (nonatomic, strong) TDInputBarAction* fieldAction;
+@property (nonatomic, strong) UIButton* moreAction;
 
-@property (nonatomic, strong) TDInputBarAction* recordAction;
-
-@property (nonatomic, strong) TDInputBarAction* moreAction;
+@property (nonatomic, strong) TDInputBarField* textField;
 
 @property (nonatomic, strong) TDInputBarItemContent* itemsContent;
 
@@ -54,29 +52,30 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
     
-        weakSelf.fieldAction = [[TDInputBarAction alloc] initWithType:TDInputBarActionTypeInput
-                                                           target:self action:NULL];
+        weakSelf.textField = [[TDInputBarField alloc] init];
         
-        weakSelf.fieldAction.option = weakSelf.option;
+        weakSelf.textField.delegate = weakSelf;
         
-        [weakSelf addSubview:weakSelf.fieldAction];
+        weakSelf.textField.placeholder = weakSelf.option.placeholder;
         
-        if (weakSelf.option.types & TDInputBarTypeRecord) {
-            
-            weakSelf.recordAction = [[TDInputBarAction alloc] initWithType:TDInputBarActionTypeRecord
-                                                                target:self
-                                                                action:@selector(moreAction:)];
-            
-            [weakSelf addSubview:weakSelf.recordAction];
-
-        }
+        weakSelf.textField.font = weakSelf.option.textFont;
+        
+        weakSelf.textField.textColor = weakSelf.option.textColor;
+        
+        weakSelf.textField.returnKeyType = weakSelf.option.returnKeyType;
+        
+        [weakSelf.textField addTarget:self action:@selector(textFieldEditingChanged:) forControlEvents:UIControlEventEditingChanged];
+        
+        [weakSelf addSubview:weakSelf.textField];
         
         if (weakSelf.option.types & TDInputBarTypeMore) {
             
-            weakSelf.moreAction = [[TDInputBarAction alloc] initWithType:TDInputBarActionTypeMore
-                                                              target:self
-                                                              action:@selector(moreAction:)];
+            weakSelf.moreAction = [UIButton buttonWithType:UIButtonTypeCustom];
             
+            [weakSelf.moreAction addTarget:weakSelf action:@selector(moreAction:) forControlEvents:UIControlEventTouchUpInside];
+            
+            [weakSelf.moreAction setImage:[weakSelf imageNamed:@"inputbar_more_action_normal"] forState:UIControlStateNormal];
+
             [weakSelf addSubview:weakSelf.moreAction];
 
             weakSelf.itemsContent = [[TDInputBarItemContent alloc] init];
@@ -206,21 +205,12 @@
         _maxPosition = CGRectGetMinX(self.moreAction.frame);
     }
 
-    if (self.recordAction) {
-        CGFloat recordH = CGRectGetHeight(self.bounds);
-        CGFloat recordW = recordH;
-        CGFloat recordY = 0;
-        CGFloat recordX = _maxPosition - recordW;
-        self.recordAction.frame = CGRectMake(recordX, recordY, recordW, recordH);
-        _maxPosition = CGRectGetMinX(self.recordAction.frame);
-    }
-
-    if (self.fieldAction) {
+    if (self.textField) {
         CGFloat fieldX = _insetMargin + _safeAreaInset.left;
         CGFloat fieldY = 9;
         CGFloat fieldH = CGRectGetHeight(self.bounds) - fieldY * 2;
         CGFloat fieldW = _maxPosition - fieldX - _insetMargin;
-        self.fieldAction.frame = CGRectMake(fieldX, fieldY, fieldW, fieldH);
+        self.textField.frame = CGRectMake(fieldX, fieldY, fieldW, fieldH);
     }
     
     if (self.itemsContent) {
@@ -258,8 +248,8 @@
         return YES;
     }
     
-    if (self.fieldAction.isFirstResponder) {
-        [self.fieldAction resignFirstResponder];
+    if (self.textField.isFirstResponder) {
+        [self.textField resignFirstResponder];
         return YES;
     }
     
@@ -272,7 +262,7 @@
 
 - (void)keyboardWillShowNotifation:(NSNotification*)notifation{
 
-    if (!self.fieldAction.isFirstResponder) { return;}
+    if (!self.textField.isFirstResponder) { return;}
 
     _keyboardDidShow = YES;
 
@@ -298,7 +288,7 @@
 
 - (void)keyboardWillHideNotifation:(NSNotification*)notifation{
     
-    if (!self.fieldAction.isFirstResponder) { return;}
+    if (!self.textField.isFirstResponder) { return;}
     
     _keyboardDidShow = YES;
     
@@ -324,14 +314,14 @@
 - (void)moreAction:(UIButton*)sender{
     
     if (self.itemsContent.hidden == NO) {
-        [self.fieldAction becomeFirstResponder];
+        [self.textField becomeFirstResponder];
         return;
     }
     
     self.itemsContent.hidden = NO;
 
-    if ([self.fieldAction isFirstResponder]) {
-        [self.fieldAction resignFirstResponder];
+    if ([self.textField isFirstResponder]) {
+        [self.textField resignFirstResponder];
     }
     
     CGAffineTransform transform = CGAffineTransformMakeTranslation(0, -CGRectGetHeight(self.itemsContent.bounds));
@@ -397,10 +387,40 @@
     return YES;
 }
 
-- (void)insertText:(NSString *)text{
-    TDInputBarField* field = self.fieldAction.subviews.firstObject;
-    if (field) {
-        [field insertText:text];
+- (void)textFieldEditingChanged:(TDInputBarField*)textField{
+    id<TDInputBarDelegate> delegate = self.option.delegate;
+
+    if (delegate && [delegate respondsToSelector:@selector(inputBar:editingChanged:)]) {
+        [delegate inputBar:self editingChanged:textField];
     }
+}
+
+- (void)insertText:(NSString *)text{
+    [self.textField insertText:text];
+}
+
+
+- (BOOL)isFirstResponder{
+    return [self.textField isFirstResponder];
+}
+- (BOOL)resignFirstResponder{
+    return [self.textField resignFirstResponder];
+}
+- (BOOL)becomeFirstResponder{
+    return [self.textField becomeFirstResponder];
+}
+
+- (UIImage*)imageNamed:(NSString*)name{
+    NSBundle* mainBundle = [NSBundle bundleForClass:[TDInputBar class]];
+    
+    NSBundle* resourcesBundle = [NSBundle bundleWithPath:[mainBundle pathForResource:@"TDInputBar" ofType:@"bundle"]];
+    
+    if (resourcesBundle == nil) {
+        resourcesBundle = mainBundle;
+    }
+    
+    UIImage* image = [UIImage imageNamed:name inBundle:resourcesBundle compatibleWithTraitCollection:nil];
+    
+    return image;
 }
 @end

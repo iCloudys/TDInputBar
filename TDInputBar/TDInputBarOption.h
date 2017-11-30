@@ -85,6 +85,16 @@ shouldDeleteInRange:(NSRange)range;
 - (void)inputBar:(TDInputBar *)inputBar
    beginAnimated:(NSDictionary<TDInputAnimatedKey,__kindof NSValue*>*)animated;
 
+
+/**
+ 输入框输入编辑内容
+
+ @param inputBar inputBar
+ @param textField field
+ */
+- (void)inputBar:(TDInputBar*)inputBar
+  editingChanged:(TDInputBarField*)textField;
+
 @end
 
 

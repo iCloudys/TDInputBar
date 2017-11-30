@@ -184,6 +184,10 @@ TDInputBarDelegate>
     return NO;
 }
 
+- (void)inputBar:(TDInputBar *)inputBar editingChanged:(TDInputBarField *)textField{
+    NSLog(@"编辑文字:%@",textField.text);
+}
+
 //TableView滚动到底部
 - (void)scrollBottom:(BOOL)animated{
     

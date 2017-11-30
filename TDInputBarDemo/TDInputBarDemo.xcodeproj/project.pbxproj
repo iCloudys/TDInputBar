@@ -16,10 +16,10 @@
 		04EDEDE21FCD49A9009ACF03 /* TDInputBar.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 04EDEDDA1FCD49A9009ACF03 /* TDInputBar.bundle */; };
 		04EDEDE31FCD49A9009ACF03 /* TDInputBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EDEDDC1FCD49A9009ACF03 /* TDInputBarItem.m */; };
 		04EDEDE41FCD49A9009ACF03 /* TDInputBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EDEDDD1FCD49A9009ACF03 /* TDInputBar.m */; };
-		04EDEDE51FCD49A9009ACF03 /* TDInputBarAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EDEDDE1FCD49A9009ACF03 /* TDInputBarAction.m */; };
 		04EDEDE61FCD49A9009ACF03 /* TDInputBarField.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EDEDDF1FCD49A9009ACF03 /* TDInputBarField.m */; };
 		04EDEDE71FCD49A9009ACF03 /* TDInputBarItemContent.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EDEDE01FCD49A9009ACF03 /* TDInputBarItemContent.m */; };
 		04EDEDEA1FCD4CD0009ACF03 /* IMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EDEDE91FCD4CD0009ACF03 /* IMViewController.m */; };
+		04EDEDF31FCFFC2C009ACF03 /* TDInputBar.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 04EDEDF21FCFFC2C009ACF03 /* TDInputBar.podspec */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,16 +37,15 @@
 		04EDEDD61FCD49A9009ACF03 /* TDInputBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDInputBar.h; sourceTree = "<group>"; };
 		04EDEDD71FCD49A9009ACF03 /* TDInputBarItemContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDInputBarItemContent.h; sourceTree = "<group>"; };
 		04EDEDD81FCD49A9009ACF03 /* TDInputBarField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDInputBarField.h; sourceTree = "<group>"; };
-		04EDEDD91FCD49A9009ACF03 /* TDInputBarAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDInputBarAction.h; sourceTree = "<group>"; };
 		04EDEDDA1FCD49A9009ACF03 /* TDInputBar.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TDInputBar.bundle; sourceTree = "<group>"; };
 		04EDEDDB1FCD49A9009ACF03 /* TDInputBarOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDInputBarOption.h; sourceTree = "<group>"; };
 		04EDEDDC1FCD49A9009ACF03 /* TDInputBarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDInputBarItem.m; sourceTree = "<group>"; };
 		04EDEDDD1FCD49A9009ACF03 /* TDInputBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDInputBar.m; sourceTree = "<group>"; };
-		04EDEDDE1FCD49A9009ACF03 /* TDInputBarAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDInputBarAction.m; sourceTree = "<group>"; };
 		04EDEDDF1FCD49A9009ACF03 /* TDInputBarField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDInputBarField.m; sourceTree = "<group>"; };
 		04EDEDE01FCD49A9009ACF03 /* TDInputBarItemContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TDInputBarItemContent.m; sourceTree = "<group>"; };
 		04EDEDE81FCD4CD0009ACF03 /* IMViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMViewController.h; sourceTree = "<group>"; };
 		04EDEDE91FCD4CD0009ACF03 /* IMViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IMViewController.m; sourceTree = "<group>"; };
+		04EDEDF21FCFFC2C009ACF03 /* TDInputBar.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TDInputBar.podspec; path = ../TDInputBar.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +62,7 @@
 		04EDEDB11FCD4975009ACF03 = {
 			isa = PBXGroup;
 			children = (
+				04EDEDF21FCFFC2C009ACF03 /* TDInputBar.podspec */,
 				04EDEDD31FCD49A9009ACF03 /* TDInputBar */,
 				04EDEDBC1FCD4975009ACF03 /* TDInputBarDemo */,
 				04EDEDBB1FCD4975009ACF03 /* Products */,
@@ -97,19 +97,17 @@
 		04EDEDD31FCD49A9009ACF03 /* TDInputBar */ = {
 			isa = PBXGroup;
 			children = (
+				04EDEDDB1FCD49A9009ACF03 /* TDInputBarOption.h */,
 				04EDEDD41FCD49A9009ACF03 /* TDInputBarOption.m */,
 				04EDEDD51FCD49A9009ACF03 /* TDInputBarItem.h */,
-				04EDEDD61FCD49A9009ACF03 /* TDInputBar.h */,
-				04EDEDD71FCD49A9009ACF03 /* TDInputBarItemContent.h */,
-				04EDEDD81FCD49A9009ACF03 /* TDInputBarField.h */,
-				04EDEDD91FCD49A9009ACF03 /* TDInputBarAction.h */,
-				04EDEDDA1FCD49A9009ACF03 /* TDInputBar.bundle */,
-				04EDEDDB1FCD49A9009ACF03 /* TDInputBarOption.h */,
 				04EDEDDC1FCD49A9009ACF03 /* TDInputBarItem.m */,
+				04EDEDD61FCD49A9009ACF03 /* TDInputBar.h */,
 				04EDEDDD1FCD49A9009ACF03 /* TDInputBar.m */,
-				04EDEDDE1FCD49A9009ACF03 /* TDInputBarAction.m */,
-				04EDEDDF1FCD49A9009ACF03 /* TDInputBarField.m */,
+				04EDEDD71FCD49A9009ACF03 /* TDInputBarItemContent.h */,
 				04EDEDE01FCD49A9009ACF03 /* TDInputBarItemContent.m */,
+				04EDEDD81FCD49A9009ACF03 /* TDInputBarField.h */,
+				04EDEDDF1FCD49A9009ACF03 /* TDInputBarField.m */,
+				04EDEDDA1FCD49A9009ACF03 /* TDInputBar.bundle */,
 			);
 			name = TDInputBar;
 			path = ../TDInputBar;
@@ -176,6 +174,7 @@
 				04EDEDCA1FCD4975009ACF03 /* LaunchScreen.storyboard in Resources */,
 				04EDEDC71FCD4975009ACF03 /* Assets.xcassets in Resources */,
 				04EDEDE21FCD49A9009ACF03 /* TDInputBar.bundle in Resources */,
+				04EDEDF31FCFFC2C009ACF03 /* TDInputBar.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,7 +188,6 @@
 				04EDEDC21FCD4975009ACF03 /* ViewController.m in Sources */,
 				04EDEDCD1FCD4975009ACF03 /* main.m in Sources */,
 				04EDEDE41FCD49A9009ACF03 /* TDInputBar.m in Sources */,
-				04EDEDE51FCD49A9009ACF03 /* TDInputBarAction.m in Sources */,
 				04EDEDE71FCD49A9009ACF03 /* TDInputBarItemContent.m in Sources */,
 				04EDEDBF1FCD4975009ACF03 /* AppDelegate.m in Sources */,
 				04EDEDE61FCD49A9009ACF03 /* TDInputBarField.m in Sources */,
