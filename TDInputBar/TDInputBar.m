@@ -11,9 +11,6 @@
 
 @interface TDInputBar()
 <UITextFieldDelegate>
-{
-    BOOL _keyboardDidShow;
-}
 
 @property (nonatomic, strong) UIButton* moreAction;
 
@@ -178,9 +175,7 @@
     
     if (CGRectEqualToRect(self.frame, newFrame)) {return NO;}
     
-    if (!CGAffineTransformIsIdentity(self.transform)) {
-        return NO;
-    }
+    if (!CGAffineTransformIsIdentity(self.transform)) {return NO;}
     
     self.frame = newFrame;
     
@@ -223,7 +218,12 @@
 }
 
 //返回NO 则传递给下一层，返回YES自己处理事件
+
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event{
+    if (self.option.shouldResignOnTouchOutside == NO) {
+        return [super pointInside:point withEvent:event];
+    }
+    
     if (CGRectContainsPoint(self.bounds, point)){return YES;}
 
     if (self.itemsContent) {
@@ -231,40 +231,18 @@
 
         if (CGRectContainsPoint(rect, point)) {return YES;}
     }
-    
-    if (self.itemsContent && self.itemsContent.hidden == NO) {
-        NSMutableDictionary* info = [NSMutableDictionary dictionary];
-        info[TDInputAnimatedDurationKey] = @(0.25);
-        info[TDInputAnimatedOptionsKey] = @(7);
-        info[TDInputAnimatedTransformKey] = [NSValue valueWithCGAffineTransform:CGAffineTransformIdentity];
-        
-        __weak typeof(self) weakSelf = self;
-        [self animateWithInfo:info completion:^(BOOL finished) {
-            if (weakSelf.itemsContent) {
-                weakSelf.itemsContent.hidden = YES;
-            }
-        }];
-        
-        return YES;
-    }
-    
-    if (self.textField.isFirstResponder) {
-        [self.textField resignFirstResponder];
-        return YES;
-    }
-    
-    if (_keyboardDidShow) {
-        return YES;
+
+    if (self.isFirstResponder) {
+        return[self resignFirstResponder];
     }
     
     return NO;
 }
 
+
 - (void)keyboardWillShowNotifation:(NSNotification*)notifation{
 
-    if (!self.textField.isFirstResponder) { return;}
-
-    _keyboardDidShow = YES;
+    if (!self.isFirstResponder) { return;}
 
     CGRect keyboardFrame = [[notifation userInfo][UIKeyboardFrameEndUserInfoKey] CGRectValue];
     
@@ -288,9 +266,7 @@
 
 - (void)keyboardWillHideNotifation:(NSNotification*)notifation{
     
-    if (!self.textField.isFirstResponder) { return;}
-    
-    _keyboardDidShow = YES;
+    if (!self.isFirstResponder) { return;}
     
     if (self.itemsContent && self.itemsContent.hidden == NO) {return;}
     
@@ -308,7 +284,6 @@
 }
 
 - (void)keyboardDidHideNotifation:(NSNotification*)notifation{
-    _keyboardDidShow = NO;
 }
 
 - (void)moreAction:(UIButton*)sender{
@@ -399,13 +374,31 @@
     [self.textField insertText:text];
 }
 
-
 - (BOOL)isFirstResponder{
-    return [self.textField isFirstResponder];
+    return [self.textField isFirstResponder] || (!CGAffineTransformIsIdentity(self.transform));
 }
+
 - (BOOL)resignFirstResponder{
-    return [self.textField resignFirstResponder];
+    if (self.textField.isFirstResponder) {
+        return [self.textField resignFirstResponder];
+    }
+    if (!CGAffineTransformIsIdentity(self.transform)) {
+        NSMutableDictionary* info = [NSMutableDictionary dictionary];
+        info[TDInputAnimatedDurationKey] = @(0.25);
+        info[TDInputAnimatedOptionsKey] = @(7);
+        info[TDInputAnimatedTransformKey] = [NSValue valueWithCGAffineTransform:CGAffineTransformIdentity];
+        
+        __weak typeof(self) weakSelf = self;
+        [self animateWithInfo:info completion:^(BOOL finished) {
+            if (weakSelf.itemsContent) {
+                weakSelf.itemsContent.hidden = YES;
+            }
+        }];
+        return YES;
+    }
+    return NO;
 }
+
 - (BOOL)becomeFirstResponder{
     return [self.textField becomeFirstResponder];
 }

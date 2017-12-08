@@ -19,7 +19,8 @@ typedef NSString* User;
 @interface IMViewController ()<
 UITableViewDataSource,
 UITableViewDelegate,
-TDInputBarDelegate>
+TDInputBarDelegate,
+UISearchBarDelegate>
 
 @property (nonatomic, strong) UITableView* tableView;
 
@@ -38,6 +39,8 @@ TDInputBarDelegate>
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.view.backgroundColor = [UIColor whiteColor];
+    
     self.dataSource = [NSMutableArray array];
     
     self.atUsers = [NSMutableArray array];
@@ -45,6 +48,12 @@ TDInputBarDelegate>
     [self setupTableView];
     
     [self setupInputBar];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"结束编辑" style:0 target:self action:@selector(endEdit:)];
+}
+
+- (void)endEdit:(UIBarButtonItem*)item{
+    [self.inputBar resignFirstResponder];
 }
 
 - (void)setupTableView{
@@ -53,6 +62,16 @@ TDInputBarDelegate>
     self.tableView.dataSource = self;
     
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
+    UISearchBar* searchBar = [[UISearchBar alloc] init];
+    
+    searchBar.frame = CGRectMake(0, 0, 0, 44);
+    
+    searchBar.showsCancelButton = YES;
+    
+    searchBar.delegate = self;
+    
+    self.tableView.tableHeaderView = searchBar;
     
     self.tableView.tableFooterView = [UIView new];
     
@@ -81,7 +100,11 @@ TDInputBarDelegate>
     
     option.delegate = self;
     
+    option.types = TDInputBarTypeText | TDInputBarTypeMore;
+    
     option.characterSet = [NSCharacterSet characterSetWithCharactersInString:TDInputAtStart];
+    
+//    option.shouldResignOnTouchOutside = NO;
     
     self.inputBar.option = option;
 }
@@ -110,6 +133,10 @@ TDInputBarDelegate>
     return cell;
 }
 
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
+    [searchBar endEditing:YES];
+}
+
 //键盘动画
 - (void)inputBar:(TDInputBar *)inputBar beginAnimated:(NSDictionary<TDInputAnimatedKey,__kindof NSValue *> *)animated{
 
@@ -136,14 +163,15 @@ TDInputBarDelegate>
 
 //发送消息
 - (void)inputBar:(TDInputBar *)inputBar textField:(TDInputBarField *)textField didPressReturn:(NSString *)string{
+    
     if (string.length == 0) {return;}
     
     [self.dataSource addObject:string];
-    
+
     NSIndexPath* indexPath = [NSIndexPath indexPathForRow:self.dataSource.count - 1 inSection:0];
-    
+
     [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-    
+
     [self scrollBottom:YES];
 }
 

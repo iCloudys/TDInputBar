@@ -108,6 +108,8 @@ shouldDeleteInRange:(NSRange)range;
 
 @property (nonatomic, weak) id <TDInputBarDelegate> delegate;
 
+//点击外侧，是否撤销编辑状态 default YES
+@property(nonatomic, assign) BOOL shouldResignOnTouchOutside;
 
 //TextField
 @property (nonatomic, copy) NSString* placeholder;

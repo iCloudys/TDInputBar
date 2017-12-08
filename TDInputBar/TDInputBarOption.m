@@ -18,6 +18,8 @@
         
         self.types = TDInputBarTypeText;
         
+        self.shouldResignOnTouchOutside = YES;
+        
         self.placeholder = @"请输入...";
         
         self.returnKeyType = UIReturnKeySend;
