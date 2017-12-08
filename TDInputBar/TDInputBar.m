@@ -220,20 +220,19 @@
 //返回NO 则传递给下一层，返回YES自己处理事件
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event{
-    if (self.option.shouldResignOnTouchOutside == NO) {
-        return [super pointInside:point withEvent:event];
-    }
-    
     if (CGRectContainsPoint(self.bounds, point)){return YES;}
-
+    
     if (self.itemsContent) {
         CGRect rect = [self.itemsContent convertRect:self.itemsContent.bounds toView:self];
-
+        
         if (CGRectContainsPoint(rect, point)) {return YES;}
     }
-
+    
     if (self.isFirstResponder) {
-        return[self resignFirstResponder];
+        if (self.option.shouldResignOnTouchOutside == NO) {
+            return [super pointInside:point withEvent:event];
+        }
+        return [self resignFirstResponder];
     }
     
     return NO;
