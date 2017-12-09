@@ -346,6 +346,10 @@ UIGestureRecognizerDelegate>
     
     textField.text = nil;
     
+    if (delegate && [delegate respondsToSelector:@selector(inputBar:editingChanged:)]) {
+        [delegate inputBar:self editingChanged:textField];
+    }
+    
     return YES;
 }
 
