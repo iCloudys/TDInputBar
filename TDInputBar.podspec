@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
 s.name         = "TDInputBar"
-s.version      = "2.1.1"
+s.version      = "2.1.2"
 s.summary      = "An InputBar same as QQ or WeChat adopt iPhoneX"
 s.description  = <<-DESC
 An InputBar same as QQ or WeChat

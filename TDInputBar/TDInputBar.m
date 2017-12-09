@@ -10,7 +10,8 @@
 #import "TDInputBarField.h"
 
 @interface TDInputBar()
-<UITextFieldDelegate>
+<UITextFieldDelegate,
+UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UIButton* moreAction;
 
@@ -38,7 +39,7 @@
         self.translucent = NO;
         
         [self setupSubviews];
-
+        
     }
     return self;
 }
@@ -48,7 +49,7 @@
     __weak typeof(self) weakSelf = self;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-    
+        
         weakSelf.textField = [[TDInputBarField alloc] init];
         
         weakSelf.textField.delegate = weakSelf;
@@ -72,11 +73,11 @@
             [weakSelf.moreAction addTarget:weakSelf action:@selector(moreAction:) forControlEvents:UIControlEventTouchUpInside];
             
             [weakSelf.moreAction setImage:[weakSelf imageNamed:@"inputbar_more_action_normal"] forState:UIControlStateNormal];
-
+            
             [weakSelf addSubview:weakSelf.moreAction];
-
+            
             weakSelf.itemsContent = [[TDInputBarItemContent alloc] init];
-                        
+            
             weakSelf.itemsContent.hidden = YES;
             
             weakSelf.itemsContent.items = weakSelf.option.items;
@@ -116,8 +117,13 @@
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardDidHideNotifation:)
-                                                 name:UIKeyboardDidHideNotification
+                                             selector:@selector(textFieldDidEndEditingNotifation:)
+                                                 name:UITextFieldTextDidEndEditingNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(textFieldDidBeginEditingNotifation:)
+                                                 name:UITextFieldTextDidBeginEditingNotification
                                                object:nil];
 }
 
@@ -132,9 +138,12 @@
                                                   object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardDidHideNotification
+                                                    name:UITextFieldTextDidEndEditingNotification
                                                   object:nil];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UITextFieldTextDidBeginEditingNotification
+                                                  object:nil];
 }
 
 - (void)layoutSubviews{
@@ -199,7 +208,7 @@
         self.moreAction.frame = CGRectMake(moreX, moreY, moreW, moreH);
         _maxPosition = CGRectGetMinX(self.moreAction.frame);
     }
-
+    
     if (self.textField) {
         CGFloat fieldX = _insetMargin + _safeAreaInset.left;
         CGFloat fieldY = 9;
@@ -220,6 +229,17 @@
 //返回NO 则传递给下一层，返回YES自己处理事件
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event{
+    
+    if ([self pointInView:point]) {
+        return YES;
+    }
+    
+    return [super pointInside:point withEvent:event];
+}
+
+
+- (BOOL)pointInView:(CGPoint)point{
+    
     if (CGRectContainsPoint(self.bounds, point)){return YES;}
     
     if (self.itemsContent) {
@@ -228,28 +248,20 @@
         if (CGRectContainsPoint(rect, point)) {return YES;}
     }
     
-    if (self.isFirstResponder) {
-        if (self.option.shouldResignOnTouchOutside == NO) {
-            return [super pointInside:point withEvent:event];
-        }
-        return [self resignFirstResponder];
-    }
-    
     return NO;
 }
 
-
 - (void)keyboardWillShowNotifation:(NSNotification*)notifation{
-
+    
     if (!self.isFirstResponder) { return;}
-
+    
     CGRect keyboardFrame = [[notifation userInfo][UIKeyboardFrameEndUserInfoKey] CGRectValue];
     
     UIEdgeInsets safeAreaInset = UIEdgeInsetsZero;
     if (@available(iOS 11, *)) {safeAreaInset = self.superview.safeAreaInsets;}
     
     CGAffineTransform transform = CGAffineTransformMakeTranslation(0, -keyboardFrame.size.height + safeAreaInset.bottom);
-
+    
     NSMutableDictionary* info = [NSMutableDictionary dictionary];
     info[TDInputAnimatedDurationKey] = [notifation userInfo][TDInputAnimatedDurationKey];
     info[TDInputAnimatedOptionsKey] = [notifation userInfo][TDInputAnimatedOptionsKey];
@@ -282,8 +294,6 @@
     }];
 }
 
-- (void)keyboardDidHideNotifation:(NSNotification*)notifation{
-}
 
 - (void)moreAction:(UIButton*)sender{
     
@@ -293,7 +303,7 @@
     }
     
     self.itemsContent.hidden = NO;
-
+    
     if ([self.textField isFirstResponder]) {
         [self.textField resignFirstResponder];
     }
@@ -363,10 +373,21 @@
 
 - (void)textFieldEditingChanged:(TDInputBarField*)textField{
     id<TDInputBarDelegate> delegate = self.option.delegate;
-
+    
     if (delegate && [delegate respondsToSelector:@selector(inputBar:editingChanged:)]) {
         [delegate inputBar:self editingChanged:textField];
     }
+}
+
+- (void)textFieldDidBeginEditingNotifation:(NSNotification*)notifation{
+    UITextField* textField = notifation.object;
+    if (textField != self.textField) {
+        [self resignFirstResponder];
+    }
+}
+
+- (void)textFieldDidEndEditingNotifation:(NSNotification*)notifation{
+    
 }
 
 - (void)insertText:(NSString *)text{
@@ -378,6 +399,8 @@
 }
 
 - (BOOL)resignFirstResponder{
+    [super resignFirstResponder];
+    
     if (self.textField.isFirstResponder) {
         return [self.textField resignFirstResponder];
     }
@@ -399,6 +422,8 @@
 }
 
 - (BOOL)becomeFirstResponder{
+    [super becomeFirstResponder];
+    
     return [self.textField becomeFirstResponder];
 }
 
@@ -416,3 +441,4 @@
     return image;
 }
 @end
+
