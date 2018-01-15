@@ -398,6 +398,18 @@ UIGestureRecognizerDelegate>
     [self.textField insertText:text];
 }
 
+- (void)setText:(NSString *)text{
+    self.textField.text = text;
+}
+
+- (NSString*)text{
+    return self.textField.text;
+}
+
+- (void)clear{
+    self.textField.text = nil;
+}
+
 - (BOOL)isFirstResponder{
     return [self.textField isFirstResponder] || (!CGAffineTransformIsIdentity(self.transform));
 }

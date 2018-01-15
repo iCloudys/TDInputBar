@@ -21,6 +21,10 @@
 
 @property (nonatomic, strong) TDInputBarOption* option;
 
+@property (nonatomic, strong) NSString* text;
+
 - (void)insertText:(NSString*)text;
+
+- (void)clear;
 
 @end
