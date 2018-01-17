@@ -104,7 +104,7 @@ UISearchBarDelegate>
     
     option.characterSet = [NSCharacterSet characterSetWithCharactersInString:TDInputAtStart];
     
-    option.shouldResignOnTouchOutside = NO;
+//    option.shouldResignOnTouchOutside = NO;
     
     self.inputBar.option = option;
 }

@@ -233,7 +233,9 @@ UIGestureRecognizerDelegate>
     if ([self pointInView:point]) {
         return YES;
     }
-    
+    if (self.option.shouldResignOnTouchOutside && self.isFirstResponder) {
+        [self resignFirstResponder];
+    }
     return [super pointInside:point withEvent:event];
 }
 
